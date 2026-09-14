@@ -17,17 +17,16 @@
   --sky-b:#1E2A5E;
   --lane:rgba(255,255,255,.055);
   --edge:rgba(255,255,255,.14);
+  --dough:#E8C98F;
+  --crust:#C48F4B;
   --r:22px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{
   font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
-  background:var(--sky-a);
-  color:var(--paper);
-  overflow:hidden;
-  transition:background 3s linear;
-  font-variant-numeric:tabular-nums;
+  background:var(--sky-a);color:var(--paper);overflow:hidden;
+  transition:background 3s linear;font-variant-numeric:tabular-nums;
 }
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -42,44 +41,30 @@ body::before{
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   gap:clamp(10px,2vw,32px);padding:0 clamp(6px,1.4vw,22px) clamp(10px,1.6vh,20px);
 }
-.clock{
-  font-size:clamp(46px,9.2vh,104px);font-weight:800;letter-spacing:-.04em;line-height:.86;
-}
-.until{
-  font-size:clamp(13px,1.9vh,22px);font-weight:600;opacity:.72;margin-top:.35em;letter-spacing:-.01em;
-}
+.clock{font-size:clamp(44px,8.6vh,98px);font-weight:800;letter-spacing:-.04em;line-height:.86}
+.until{font-size:clamp(13px,1.9vh,22px);font-weight:600;opacity:.72;margin-top:.35em}
 .mascot-seat{display:flex;flex-direction:column;align-items:center;gap:6px}
-.mascot{width:clamp(64px,11vh,128px);height:clamp(64px,11vh,128px);display:block}
-.mascot-name{
-  font-size:clamp(12px,1.7vh,19px);font-weight:600;opacity:.8;text-align:center;
-  max-width:22ch;line-height:1.2;
-}
-.phaseword{
-  text-align:right;font-size:clamp(15px,2.6vh,32px);font-weight:600;line-height:1.15;
-  letter-spacing:-.02em;opacity:.9;max-width:16ch;margin-left:auto;
-}
+.mascot{width:clamp(60px,10vh,120px);height:clamp(60px,10vh,120px);display:block}
+.mascot-name{font-size:clamp(12px,1.7vh,19px);font-weight:600;opacity:.8;text-align:center;max-width:22ch;line-height:1.2}
+.phaseword{text-align:right;font-size:clamp(15px,2.6vh,32px);font-weight:600;line-height:1.15;letter-spacing:-.02em;opacity:.9;max-width:16ch;margin-left:auto}
 
 .lanes{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vw,22px);min-height:0}
 .lane{
   position:relative;border-radius:var(--r);background:var(--lane);
   border:1px solid var(--edge);overflow:hidden;display:flex;flex-direction:column;min-height:0;
 }
-.fill{
-  position:absolute;left:0;right:0;bottom:0;height:0%;
-  transition:height .7s cubic-bezier(.22,1,.36,1);
-  background:linear-gradient(180deg,color-mix(in srgb,var(--kid) 34%,transparent) 0%,color-mix(in srgb,var(--kid) 16%,transparent) 100%);
-  border-top:2px solid color-mix(in srgb,var(--kid) 70%,transparent);
-}
 .lane-head{
-  position:relative;z-index:2;display:flex;align-items:baseline;justify-content:space-between;
-  gap:10px;padding:clamp(10px,1.7vh,20px) clamp(12px,1.6vw,24px) clamp(6px,1vh,12px);
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:clamp(8px,1.2vw,16px);
+  padding:clamp(10px,1.6vh,20px) clamp(12px,1.5vw,22px) clamp(6px,.9vh,12px);
 }
-.kid-name{font-size:clamp(22px,4.2vh,50px);font-weight:800;letter-spacing:-.03em;color:var(--kid)}
-.tally{font-size:clamp(14px,2.1vh,26px);font-weight:600;opacity:.66}
+.kid-name{font-size:clamp(21px,4vh,48px);font-weight:800;letter-spacing:-.03em;color:var(--kid);line-height:1}
+.tally{font-size:clamp(13px,1.9vh,23px);font-weight:600;opacity:.66;margin-top:.35em}
+.togo{font-size:clamp(12px,1.7vh,20px);font-weight:600;opacity:.45;margin-top:.15em}
+.pie{width:clamp(66px,12.5vh,142px);height:clamp(66px,12.5vh,142px);display:block;flex:none}
+
 .tasks{
-  position:relative;z-index:2;flex:1;min-height:0;overflow:hidden;
-  display:flex;flex-direction:column;gap:clamp(4px,.72vh,9px);
-  padding:0 clamp(10px,1.4vw,20px) clamp(10px,1.6vh,20px);
+  flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;
+  gap:clamp(4px,.7vh,9px);padding:0 clamp(10px,1.4vw,20px) clamp(10px,1.6vh,20px);
 }
 .task{
   flex:1 1 0;min-height:0;display:flex;align-items:center;gap:clamp(8px,1.2vw,16px);
@@ -87,11 +72,8 @@ body::before{
   background:rgba(255,255,255,.045);border:1px solid transparent;
   transition:background .25s,opacity .25s,border-color .25s;
 }
-.task .ico{font-size:clamp(18px,3.1vh,34px);line-height:1;flex:none;filter:saturate(.92)}
-.task .lbl{
-  font-size:clamp(14px,2.45vh,30px);font-weight:600;letter-spacing:-.015em;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
+.task .ico{font-size:clamp(17px,2.9vh,32px);line-height:1;flex:none}
+.task .lbl{font-size:clamp(13px,2.3vh,28px);font-weight:600;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .task.done{background:color-mix(in srgb,var(--kid) 20%,transparent);border-color:color-mix(in srgb,var(--kid) 45%,transparent)}
 .task.done .lbl{opacity:.5;text-decoration:line-through;text-decoration-thickness:2px}
 .task.done .ico{opacity:.55}
@@ -102,110 +84,74 @@ body::before{
 
 /* ---------- CONTROL ---------- */
 .control{height:100%;display:flex;flex-direction:column;background:#0B0F24}
-.ctl-bar{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:10px 16px;border-bottom:1px solid var(--edge);
-}
+.ctl-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--edge)}
 .ctl-clock{font-size:24px;font-weight:800;letter-spacing:-.03em}
 .ctl-note{font-size:13px;opacity:.6;font-weight:600}
 .zones{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--edge);min-height:0}
 .zone{background:#0B0F24;display:flex;flex-direction:column;min-height:0}
-.zone-head{
-  padding:12px 16px 8px;font-size:26px;font-weight:800;color:var(--kid);letter-spacing:-.03em;
-  display:flex;justify-content:space-between;align-items:baseline;
-}
+.zone-head{padding:12px 16px 8px;font-size:25px;font-weight:800;color:var(--kid);letter-spacing:-.03em;display:flex;justify-content:space-between;align-items:baseline}
 .zone-head span{font-size:14px;font-weight:600;color:var(--paper);opacity:.55}
 .btns{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:0 12px 14px}
 .btn{
-  flex:1 0 auto;min-height:52px;display:flex;align-items:center;gap:12px;
-  padding:8px 14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.04);color:var(--paper);font:inherit;font-size:17px;font-weight:600;
-  text-align:left;cursor:pointer;transition:transform .12s,background .2s,border-color .2s;
+  flex:1 0 auto;min-height:48px;display:flex;align-items:center;gap:12px;padding:8px 14px;
+  border-radius:14px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
+  color:var(--paper);font:inherit;font-size:16px;font-weight:600;text-align:left;cursor:pointer;
+  transition:transform .12s,background .2s,border-color .2s;
 }
 .btn:active{transform:scale(.975)}
-.btn .ico{font-size:23px;flex:none}
+.btn .ico{font-size:22px;flex:none}
 .btn.done{background:color-mix(in srgb,var(--kid) 26%,transparent);border-color:var(--kid)}
 .btn.done .lbl{opacity:.55;text-decoration:line-through}
 .btn:focus-visible{outline:3px solid var(--paper);outline-offset:2px}
 
 /* ---------- OVERLAYS ---------- */
-.veil{
-  position:fixed;inset:0;z-index:50;display:none;place-items:center;text-align:center;
-  padding:28px;background:rgba(8,11,30,.93);backdrop-filter:blur(7px);
-}
+.veil{position:fixed;inset:0;z-index:50;display:none;place-items:center;text-align:center;padding:28px;background:rgba(8,11,30,.93);backdrop-filter:blur(7px)}
 .veil.on{display:grid}
-.veil h1{font-size:clamp(40px,11vh,130px);font-weight:800;letter-spacing:-.045em;line-height:.92}
-.veil p{font-size:clamp(16px,2.8vh,32px);font-weight:600;opacity:.8;margin-top:.5em;max-width:24ch;margin-inline:auto}
+.veil h1{font-size:clamp(38px,10vh,120px);font-weight:800;letter-spacing:-.045em;line-height:.92}
+.veil p{font-size:clamp(16px,2.7vh,31px);font-weight:600;opacity:.8;margin-top:.5em;max-width:24ch;margin-inline:auto}
 
-/* dance */
 #dance .dance-in{display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2vh,24px)}
 .ring{width:clamp(130px,26vh,260px);height:clamp(130px,26vh,260px);transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:12;stroke-linecap:round}
 .ring .track{stroke:rgba(255,255,255,.12)}
 .ring .lead{stroke:var(--kid);transition:stroke-dashoffset 1s linear}
 .ring-wrap{position:relative;display:grid;place-items:center}
-.ring-num{
-  position:absolute;font-size:clamp(34px,7vh,74px);font-weight:800;letter-spacing:-.04em;
-}
-.audio-note{font-size:clamp(12px,1.7vh,17px);opacity:.45;font-weight:600}
+.ring-num{position:absolute;font-size:clamp(34px,7vh,74px);font-weight:800;letter-spacing:-.04em}
 
-/* out the door */
-#out{background:#B3241C}
 #out.on{display:grid}
-.boom{font-size:clamp(70px,20vh,220px);line-height:1;animation:boom .5s ease-out}
+#out.morning{background:#B3241C}
+#out.evening{background:#0E1330}
+.boom{font-size:clamp(64px,18vh,200px);line-height:1;animation:boom .5s ease-out}
 @keyframes boom{0%{transform:scale(.2) rotate(-14deg);opacity:0}60%{transform:scale(1.22) rotate(6deg)}100%{transform:scale(1)}}
-.carry{
-  margin-top:1.1em;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:30ch;
-}
-.carry b{
-  font-size:clamp(13px,2vh,21px);font-weight:600;background:rgba(255,255,255,.16);
-  padding:.32em .7em;border-radius:999px;
-}
+.carry{margin-top:1.1em;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:30ch}
+.carry b{font-size:clamp(13px,2vh,21px);font-weight:600;background:rgba(255,255,255,.16);padding:.32em .7em;border-radius:999px}
 
-/* celebration */
 #win{background:rgba(8,11,30,.95)}
-.name-in{
-  margin-top:1.2em;font:inherit;font-size:clamp(18px,3vh,30px);font-weight:600;text-align:center;
-  background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);color:var(--paper);
-  border-radius:14px;padding:.5em .8em;width:min(90vw,16ch);
-}
+.name-in{margin-top:1.2em;font:inherit;font-size:clamp(18px,3vh,30px);font-weight:600;text-align:center;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);color:var(--paper);border-radius:14px;padding:.5em .8em;width:min(90vw,16ch)}
 .name-in:focus{outline:none;border-color:var(--maia)}
-.name-btn{
-  margin-top:.8em;font:inherit;font-size:clamp(15px,2.2vh,22px);font-weight:600;cursor:pointer;
-  background:var(--paper);color:var(--ink);border:0;border-radius:999px;padding:.6em 1.5em;
-}
+.name-btn{margin-top:.8em;font:inherit;font-size:clamp(15px,2.2vh,22px);font-weight:600;cursor:pointer;background:var(--paper);color:var(--ink);border:0;border-radius:999px;padding:.6em 1.5em}
 
-/* parent edit */
 #edit{background:rgba(8,11,30,.97);place-items:start center;overflow-y:auto}
 .panel{width:min(680px,94vw);text-align:left;padding:22px 0 60px}
 .panel h2{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px}
 .panel .sub{font-size:14px;opacity:.6;font-weight:600;margin-bottom:20px}
 .row{display:flex;gap:10px;align-items:center;margin-bottom:9px}
 .row label{font-size:14px;font-weight:600;opacity:.75;width:104px;flex:none}
-.panel input[type=text],.panel input[type=time],.panel textarea{
-  flex:1;font:inherit;font-size:15px;font-weight:600;background:rgba(255,255,255,.07);
-  border:1.5px solid rgba(255,255,255,.16);color:var(--paper);border-radius:10px;padding:9px 12px;
-}
-.panel textarea{min-height:190px;line-height:1.55;resize:vertical;font-size:14px}
+.panel input[type=text],.panel input[type=time],.panel textarea{flex:1;font:inherit;font-size:15px;font-weight:600;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.16);color:var(--paper);border-radius:10px;padding:9px 12px}
+.panel textarea{min-height:200px;line-height:1.55;resize:vertical;font-size:14px}
 .hint{font-size:12.5px;opacity:.5;font-weight:600;margin:2px 0 16px;line-height:1.5}
 .acts{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
-.acts button{
-  font:inherit;font-size:15px;font-weight:600;cursor:pointer;border-radius:999px;
-  padding:.65em 1.4em;border:1.5px solid rgba(255,255,255,.25);
-  background:transparent;color:var(--paper);
-}
+.acts button{font:inherit;font-size:15px;font-weight:600;cursor:pointer;border-radius:999px;padding:.65em 1.4em;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:var(--paper)}
 .acts button.primary{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tabs button{font:inherit;font-size:14px;font-weight:600;cursor:pointer;border-radius:999px;padding:.5em 1.2em;border:1.5px solid rgba(255,255,255,.22);background:transparent;color:var(--paper);opacity:.55}
+.tabs button.sel{opacity:1;background:rgba(255,255,255,.13)}
+
 #corner{position:fixed;left:0;top:0;width:74px;height:74px;z-index:60}
-#demo{
-  position:fixed;right:12px;bottom:10px;z-index:70;display:none;
-  font-size:12px;font-weight:600;letter-spacing:.01em;opacity:.55;
-  background:rgba(0,0,0,.35);padding:5px 11px;border-radius:999px;pointer-events:none;
-}
+#demo{position:fixed;right:12px;bottom:10px;z-index:70;display:none;font-size:12px;font-weight:600;opacity:.55;background:rgba(0,0,0,.35);padding:5px 11px;border-radius:999px;pointer-events:none}
 #demo.on{display:block}
 
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important}
-}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:760px){
   .horizon{grid-template-columns:1fr auto;row-gap:6px}
   .phaseword{grid-column:1/-1;text-align:left;margin-left:0}
@@ -225,14 +171,13 @@ body::before{
     </div>
     <h1 id="danceWho">Dance</h1>
     <p id="danceLine">Shake it out. The next bit is easier after this.</p>
-    <div class="audio-note">Music not loaded yet — put an mp3 in /audio and it plays here.</div>
   </div>
 </div>
 
 <div class="veil" id="out">
   <div>
-    <div class="boom" id="boomFace">💥</div>
-    <h1>Out the door</h1>
+    <div class="boom" id="boomFace">&#128165;</div>
+    <h1 id="outTitle">Out the door</h1>
     <p id="outLine">Eight o'clock. Go now.</p>
     <div class="carry" id="carry"></div>
   </div>
@@ -240,9 +185,9 @@ body::before{
 
 <div class="veil" id="win">
   <div>
-    <div class="boom">🌟</div>
-    <h1>Both ready</h1>
-    <p id="winLine">Ready with time to spare. You two did that yourselves.</p>
+    <div class="boom" id="winFace">&#127775;</div>
+    <h1 id="winTitle">Both ready</h1>
+    <p id="winLine">You two did that yourselves.</p>
     <div id="nameBox">
       <p style="font-size:clamp(14px,2.2vh,20px);opacity:.7;margin-top:1.4em">You've unlocked naming the little guy.</p>
       <input class="name-in" id="nameIn" maxlength="18" placeholder="Name it" autocomplete="off">
@@ -255,16 +200,16 @@ body::before{
   <div class="panel">
     <h2>Parent settings</h2>
     <div class="sub">Changes save on this device. Kids can't see this screen.</div>
-
-    <div class="row"><label for="e-leave">Leave by</label><input type="time" id="e-leave"></div>
-    <div class="row"><label for="e-start">Board wakes</label><input type="time" id="e-start"></div>
+    <div class="tabs">
+      <button id="tab-morning">Morning board</button>
+      <button id="tab-evening">Evening board</button>
+    </div>
+    <div class="row"><label for="e-end">Finish by</label><input type="time" id="e-end"></div>
     <div class="row"><label for="e-k1">Left name</label><input type="text" id="e-k1"></div>
     <div class="row"><label for="e-k2">Right name</label><input type="text" id="e-k2"></div>
-
     <div class="row" style="align-items:flex-start"><label for="e-t1" style="margin-top:9px">Left tasks</label><textarea id="e-t1" spellcheck="false"></textarea></div>
     <div class="row" style="align-items:flex-start"><label for="e-t2" style="margin-top:9px">Right tasks</label><textarea id="e-t2" spellcheck="false"></textarea></div>
-    <div class="hint">One task per line: emoji, then the words. Add <b>|dance</b> at the end of a line to put a dance break after it. Add <b>|med</b> to mark the medication step.</div>
-
+    <div class="hint">One task per line: emoji, then the words. Add <b>|dance</b> for a dance break after that task. Add <b>|med</b> to mark the medication step.</div>
     <div class="acts">
       <button class="primary" id="e-save">Save</button>
       <button id="e-clear">Clear today's ticks</button>
@@ -277,201 +222,256 @@ body::before{
 <script>
 "use strict";
 
-/* ============ DEFAULT CONFIG ============ */
+/* ============ DEFAULTS ============ */
 const DEFAULT = {
-  leave:"08:00",
-  start:"07:00",
+  names:["Maia","Tha\u00eds"],
+  colours:["#2FD4B4","#FF6FA5"],
   danceSecs:45,
-  kids:[
-    {id:"maia", name:"Maia", colour:"#2FD4B4", tasks:[
-      "🌅 Wake up","🚽 Toilet","🥣 Breakfast|dance","💊 Medication|med","👕 School clothes|dance",
-      "👟 School shoes","🪥 Brush teeth","💇 Hair","🧴 Sunscreen","🎒 Pack bag","🚪 Out the door"
-    ]},
-    {id:"thais", name:"Thaís", colour:"#FF6FA5", tasks:[
-      "🌅 Wake up","🚽 Toilet","🥣 Breakfast|dance","👕 School clothes|dance",
-      "👟 School shoes","🪥 Brush teeth","💇 Hair","🧴 Sunscreen","🎒 Pack bag","🚪 Out the door"
-    ]}
+  morning:{
+    end:"08:00",
+    tasks:[
+      ["\u{1F305} Wake up","\u{1F6BD} Toilet","\u{1F963} Breakfast|dance","\u{1F48A} Medication|med","\u{1F455} School clothes|dance",
+       "\u{1F45F} School shoes","\u{1FAA5} Brush teeth","\u{1F487} Hair","\u{1F9F4} Sunscreen","\u{1F392} Pack bag","\u{1F6AA} Out the door"],
+      ["\u{1F305} Wake up","\u{1F6BD} Toilet","\u{1F963} Breakfast|dance","\u{1F455} School clothes|dance",
+       "\u{1F45F} School shoes","\u{1FAA5} Brush teeth","\u{1F487} Hair","\u{1F9F4} Sunscreen","\u{1F392} Pack bag","\u{1F6AA} Out the door"]
+    ]
+  },
+  evening:{
+    end:"19:30",
+    tasks:[
+      ["\u{1F392} Unpack bag","\u{1F96A} Lunchbox in kitchen","\u{1F455} Uniform in laundry","\u{1F45F} Shoes away",
+       "\u{1F4D2} Homework on table","\u2709\uFE0F Notes to parents","\u{1F6C1} Bath or shower","\u{1F9F8} PJs on",
+       "\u{1F37D}\uFE0F Dinner","\u{1F9E9} Puzzle or reading","\u{1F6CF}\uFE0F Bedtime"],
+      ["\u{1F392} Unpack bag","\u{1F96A} Lunchbox in kitchen","\u{1F455} Uniform in laundry","\u{1F45F} Shoes away",
+       "\u{1F4D2} Homework on table","\u2709\uFE0F Notes to parents","\u{1F6C1} Bath or shower","\u{1F9F8} PJs on",
+       "\u{1F37D}\uFE0F Dinner","\u{1F9E9} Puzzle or reading","\u{1F6CF}\uFE0F Bedtime"]
+    ]
+  }
+};
+
+/* Morning warms toward the deadline. Evening dims toward bed - the opposite
+   on purpose: escalating red at 7pm would wind them up, not settle them. */
+const SKIES = {
+  morning:[
+    {at:-90, c:[19,26,58],  g:[30,42,94],   word:"You\u2019re up early. Start anything you like."},
+    {at:-60, c:[26,38,82],  g:[46,74,140],  word:"Morning. Start when you're ready."},
+    {at:-30, c:[40,58,104], g:[92,104,168], word:"Good pace. Keep going."},
+    {at:-15, c:[104,74,96], g:[186,118,88], word:"Fifteen minutes left."},
+    {at:-5,  c:[150,60,62], g:[218,104,58], word:"Five minutes. Shoes on."},
+    {at:0,   c:[179,36,28], g:[224,70,40],  word:"Out the door."}
+  ],
+  evening:[
+    {at:-210,c:[54,64,118], g:[132,104,158],word:"Home. Start when you're ready."},
+    {at:-120,c:[42,50,100], g:[104,80,140], word:"Plenty of time."},
+    {at:-60, c:[32,38,80],  g:[74,58,116],  word:"An hour to go."},
+    {at:-25, c:[23,28,62],  g:[50,42,92],   word:"Winding down now."},
+    {at:-10, c:[16,20,46],  g:[34,30,70],   word:"Nearly bed."},
+    {at:0,   c:[11,14,32],  g:[22,24,54],   word:"Lights out."}
   ]
 };
 
-/* ============ STORAGE (degrades quietly) ============ */
-const store = {
-  get(k,f){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):f; }catch(e){ return f; } },
-  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+/* ============ STORAGE ============ */
+const store={
+  get(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f;}catch(e){return f;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 };
+let cfg = store.get("sm.cfg3", null) || JSON.parse(JSON.stringify(DEFAULT));
 
-let cfg = Object.assign({}, DEFAULT, store.get("sm.cfg",{}));
-if(!cfg.kids || cfg.kids.length!==2) cfg.kids = DEFAULT.kids;
-
-function todayKey(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
-
-let day = store.get("sm.day",null);
-if(!day || day.date!==todayKey()){
-  day = { date:todayKey(), done:{}, mascot:null, danced:{}, won:false };
-  cfg.kids.forEach(k=>{ day.done[k.id]=[]; day.danced[k.id]=[]; });
-  store.set("sm.day",day);
+function todayKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function blankDay(){
+  return {date:todayKey(),
+    done:{morning:[[],[]], evening:[[],[]]},
+    danced:{morning:[[],[]], evening:[[],[]]},
+    mascot:null, won:{morning:false, evening:false}};
 }
-cfg.kids.forEach(k=>{ if(!day.done[k.id]) day.done[k.id]=[]; if(!day.danced[k.id]) day.danced[k.id]=[]; });
+let day = store.get("sm.day3", null);
+if(!day || day.date!==todayKey()) { day = blankDay(); store.set("sm.day3",day); }
 
-/* ============ SYNC BETWEEN THE TWO WINDOWS ============ */
-let chan=null;
-try{ chan = new BroadcastChannel("school-moanings"); }catch(e){}
-function broadcast(){ if(chan) chan.postMessage({day,cfg}); }
-if(chan) chan.onmessage = e => {
-  if(!e.data) return;
-  day = e.data.day; cfg = e.data.cfg;
+/* ============ SYNC ============ */
+let chan=null; try{chan=new BroadcastChannel("school-moanings");}catch(e){}
+function broadcast(dance){ if(chan) chan.postMessage({day:day,cfg:cfg,dance:(dance==null?null:dance)}); }
+if(chan) chan.onmessage=function(e){
+  if(!e.data)return;
+  day=e.data.day; cfg=e.data.cfg;
   render(); checkMoments();
+  if(e.data.dance!=null) runDance(e.data.dance);   // the board shows it; the console tapped it
 };
 
-/* ============ PARSING ============ */
-function parse(line){
-  const flags = line.split("|");
-  const body = flags[0].trim();
-  const m = body.match(/^(\p{Extended_Pictographic}[\uFE0F\u200D\p{Extended_Pictographic}]*)\s*(.*)$/u);
-  return {
-    ico: m? m[1] : "•",
-    lbl: m? m[2] : body,
-    raw: body,
-    dance: flags.includes("dance"),
-    med: flags.includes("med")
-  };
-}
-function tasksFor(kid){ return kid.tasks.map(parse); }
-
-/* ============ TIME ============ */
-const qs = new URLSearchParams(location.search);
-const fakeTime = qs.get("t");                      // ?t=07:52 starts the clock there
-const speed = Math.max(1, Number(qs.get("speed"))||1);  // &speed=60 runs a minute a second
-const view = (qs.get("view")||"both").toLowerCase();
-const realStart = Date.now();
-let fakeBase = null;
+/* ============ URL OPTIONS ============ */
+const qs=new URLSearchParams(location.search);
+const view=(qs.get("view")||"both").toLowerCase();
+const modeOverride=(qs.get("mode")||"").toLowerCase();
+const fakeTime=qs.get("t");
+const speed=Math.max(1,Number(qs.get("speed"))||1);
+const realStart=Date.now();
+let fakeBase=null;
 if(fakeTime && /^\d{1,2}:\d{2}$/.test(fakeTime)){
-  const [h,m]=fakeTime.split(":").map(Number);
-  const d=new Date(); d.setHours(h,m,0,0); fakeBase=d.getTime();
+  const parts=fakeTime.split(":").map(Number);
+  const d=new Date(); d.setHours(parts[0],parts[1],0,0); fakeBase=d.getTime();
 }
-
 function now(){
   if(fakeBase===null && speed===1) return new Date();
   const base = fakeBase===null ? realStart : fakeBase;
   return new Date(base + (Date.now()-realStart)*speed);
 }
-function mins(str){ const [h,m]=str.split(":").map(Number); return h*60+m; }
-function nowMins(){ const d=now(); return d.getHours()*60+d.getMinutes(); }
-function hhmm(d){ return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+function mins(s){const p=s.split(":").map(Number);return p[0]*60+p[1];}
+function nowMins(){const d=now();return d.getHours()*60+d.getMinutes();}
+function hhmm(d){return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
 
-/* Sky warms as the deadline closes in. The background is the clock. */
-const KEYS = [
-  {at:-90, c:[19,26,58],  g:[30,42,94],   word:"You\u2019re up early. Start anything you like."},
-  {at:0,   c:[26,38,82],  g:[46,74,140],  word:"Morning. Start when you're ready."},
-  {at:30,  c:[40,58,104], g:[92,104,168], word:"Good pace. Keep going."},
-  {at:45,  c:[104,74,96], g:[186,118,88], word:"Fifteen minutes left."},
-  {at:55,  c:[150,60,62], g:[218,104,58], word:"Five minutes. Shoes on."},
-  {at:60,  c:[179,36,28], g:[224,70,40],  word:"Out the door."}
-];
-function lerp(a,b,t){ return Math.round(a+(b-a)*t); }
+function mode(){
+  if(modeOverride==="morning"||modeOverride==="evening") return modeOverride;
+  return now().getHours() < 12 ? "morning" : "evening";
+}
+function board(){ return cfg[mode()]; }
+
+/* ============ TASK PARSING ============ */
+function parse(line){
+  const f=line.split("|"); const body=f[0].trim();
+  const m=body.match(/^(\p{Extended_Pictographic}[\uFE0F\u200D\p{Extended_Pictographic}]*)\s*(.*)$/u);
+  return {ico:m?m[1]:"\u2022", lbl:m?m[2]:body, dance:f.indexOf("dance")>=0, med:f.indexOf("med")>=0};
+}
+function tasksFor(k){ return board().tasks[k].map(parse); }
+function doneList(k){ return day.done[mode()][k]; }
+function isDone(k,i){ return doneList(k).indexOf(i)>=0; }
+function countDone(k){ return doneList(k).filter(function(i){return i<board().tasks[k].length;}).length; }
+function allDone(k){ return countDone(k)===board().tasks[k].length; }
+function bothDone(){ return allDone(0)&&allDone(1); }
+function undoneLabels(k){
+  return tasksFor(k).map(function(t,i){return {t:t,i:i};})
+    .filter(function(o){return !isDone(k,o.i);}).map(function(o){return o.t.lbl;});
+}
+
+function shouldDance(k,i){
+  if(!isDone(k,i)) return false;
+  const t=tasksFor(k)[i], dl=day.danced[mode()][k];
+  if(!t || !t.dance || dl.indexOf(i)>=0) return false;
+  dl.push(i);
+  return true;
+}
+function toggle(k,i){
+  const a=doneList(k), p=a.indexOf(i);
+  if(p>=0)a.splice(p,1); else a.push(i);
+  const fire=shouldDance(k,i);
+  store.set("sm.day3",day);
+  broadcast(fire?k:null);
+  render(); checkMoments();
+  if(fire) runDance(k);
+}
+
+/* ============ SKY ============ */
+function lerp(a,b,t){return Math.round(a+(b-a)*t);}
 function sky(){
-  const t = nowMins() - mins(cfg.start);
-  let lo=KEYS[0], hi=KEYS[KEYS.length-1];
-  for(let i=0;i<KEYS.length-1;i++){ if(t>=KEYS[i].at && t<=KEYS[i+1].at){ lo=KEYS[i]; hi=KEYS[i+1]; break; } }
-  if(t<KEYS[0].at){ lo=hi=KEYS[0]; }
-  if(t>KEYS[KEYS.length-1].at){ lo=hi=KEYS[KEYS.length-1]; }
-  const span = hi.at-lo.at;
-  const f = span? Math.min(1,Math.max(0,(t-lo.at)/span)) : 0;
-  const mix=(a,b)=>`rgb(${lerp(a[0],b[0],f)},${lerp(a[1],b[1],f)},${lerp(a[2],b[2],f)})`;
-  return { a:mix(lo.c,hi.c), b:mix(lo.g,hi.g), word:(f>.5?hi:lo).word };
+  const keys=SKIES[mode()];
+  const t=nowMins()-mins(board().end);
+  let lo=keys[0], hi=keys[keys.length-1];
+  for(let i=0;i<keys.length-1;i++){ if(t>=keys[i].at && t<=keys[i+1].at){ lo=keys[i]; hi=keys[i+1]; break; } }
+  if(t<keys[0].at){ lo=keys[0]; hi=keys[0]; }
+  if(t>keys[keys.length-1].at){ lo=keys[keys.length-1]; hi=keys[keys.length-1]; }
+  const span=hi.at-lo.at;
+  const f=span?Math.min(1,Math.max(0,(t-lo.at)/span)):0;
+  const mix=function(a,b){return "rgb("+lerp(a[0],b[0],f)+","+lerp(a[1],b[1],f)+","+lerp(a[2],b[2],f)+")";};
+  return {a:mix(lo.c,hi.c), b:mix(lo.g,hi.g), word:(f>.5?hi:lo).word};
 }
 
-/* ============ STATE HELPERS ============ */
-function isDone(kid,i){ return day.done[kid.id].includes(i); }
-function toggle(kid,i){
-  const arr=day.done[kid.id], p=arr.indexOf(i);
-  if(p>=0) arr.splice(p,1); else arr.push(i);
-  store.set("sm.day",day); broadcast(); render(); checkMoments(i,kid);
-}
-function countDone(kid){ return day.done[kid.id].filter(i=>i<kid.tasks.length).length; }
-function allDone(kid){ return countDone(kid)===kid.tasks.length; }
-function undoneLabels(kid){
-  return tasksFor(kid).map((t,i)=>({t,i})).filter(o=>!isDone(kid,o.i)).map(o=>o.t.lbl);
+/* ============ PIZZA ============ */
+/* Aggregate progress lives here and nowhere else, so a finished pizza and a
+   finished list can no longer be confused with one another. */
+function pizza(k){
+  const total=board().tasks[k].length, col=cfg.colours[k];
+  const cx=50, cy=50, R=42;
+  const pt=function(a,r){return [cx+r*Math.cos(a*Math.PI/180), cy+r*Math.sin(a*Math.PI/180)];};
+  let out='<svg class="pie" viewBox="0 0 100 100" role="img" aria-label="'+countDone(k)+' of '+total+' done">';
+  out+='<circle cx="50" cy="50" r="47" fill="var(--crust)"/>';
+  for(let i=0;i<total;i++){
+    const a0=-90+i*360/total, a1=-90+(i+1)*360/total;
+    const p0=pt(a0,R), p1=pt(a1,R);
+    const big=(a1-a0)>180?1:0;
+    const topped=isDone(k,i);
+    out+='<path d="M'+cx+' '+cy+' L'+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+
+         ' A'+R+' '+R+' 0 '+big+' 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+' Z" fill="'+
+         (topped?col:"var(--dough)")+'" stroke="rgba(0,0,0,.22)" stroke-width="1"/>';
+    if(topped){
+      const mid=(a0+a1)/2;
+      [[0.52,3.1],[0.78,2.4],[0.66,2.0]].forEach(function(spec,n){
+        const off=(n-1)*(360/total)*0.22;
+        const tp=pt(mid+off, R*spec[0]);
+        out+='<circle cx="'+tp[0].toFixed(2)+'" cy="'+tp[1].toFixed(2)+'" r="'+spec[1]+'" fill="rgba(0,0,0,.34)"/>';
+      });
+    }
+  }
+  out+='</svg>';
+  return out;
 }
 
 /* ============ MASCOT ============ */
-function mascotSVG(mood){
-  const eye = mood==="boom" ? `<path d="M22 30 l10 10 M32 30 l-10 10" stroke="#0C1026" stroke-width="5" stroke-linecap="round"/>
-    <path d="M58 30 l10 10 M68 30 l-10 10" stroke="#0C1026" stroke-width="5" stroke-linecap="round"/>`
-    : `<circle cx="34" cy="40" r="6" fill="#0C1026"/><circle cx="62" cy="40" r="6" fill="#0C1026"/>`;
-  const mouth = mood==="boom" ? `<ellipse cx="48" cy="62" rx="13" ry="15" fill="#0C1026"/>`
-    : mood==="happy" ? `<path d="M32 58 q16 18 32 0" stroke="#0C1026" stroke-width="5" fill="none" stroke-linecap="round"/>`
-    : `<path d="M34 62 q14 8 28 0" stroke="#0C1026" stroke-width="5" fill="none" stroke-linecap="round"/>`;
-  const body = mood==="boom" ? "#FF7A5C" : mood==="happy" ? "#FFD36E" : "#FFD36E";
-  return `<svg class="mascot" viewBox="0 0 96 96" aria-hidden="true">
-    <path d="M48 6 C74 6 90 26 90 50 C90 76 72 90 48 90 C24 90 6 76 6 50 C6 26 22 6 48 6Z" fill="${body}"/>
-    ${eye}${mouth}</svg>`;
+function mascotSVG(m){
+  const sleepy = (m==="sleepy"||m==="asleep");
+  const eye = m==="boom"
+    ? '<path d="M22 30 l10 10 M32 30 l-10 10" stroke="#0C1026" stroke-width="5" stroke-linecap="round"/><path d="M58 30 l10 10 M68 30 l-10 10" stroke="#0C1026" stroke-width="5" stroke-linecap="round"/>'
+    : sleepy
+    ? '<path d="M26 40 q8 7 16 0" stroke="#0C1026" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M54 40 q8 7 16 0" stroke="#0C1026" stroke-width="5" fill="none" stroke-linecap="round"/>'
+    : '<circle cx="34" cy="40" r="6" fill="#0C1026"/><circle cx="62" cy="40" r="6" fill="#0C1026"/>';
+  const mouth = m==="boom" ? '<ellipse cx="48" cy="62" rx="13" ry="15" fill="#0C1026"/>'
+    : m==="happy" ? '<path d="M32 58 q16 18 32 0" stroke="#0C1026" stroke-width="5" fill="none" stroke-linecap="round"/>'
+    : m==="asleep" ? '<ellipse cx="48" cy="63" rx="7" ry="9" fill="#0C1026"/>'
+    : '<path d="M34 62 q14 8 28 0" stroke="#0C1026" stroke-width="5" fill="none" stroke-linecap="round"/>';
+  const body = m==="boom" ? "#FF7A5C" : sleepy ? "#BFC6F5" : "#FFD36E";
+  const z = m==="asleep" ? '<text x="74" y="22" font-size="20" font-weight="800" fill="#BFC6F5">z</text>' : "";
+  return '<svg class="mascot" viewBox="0 0 96 96" aria-hidden="true">'+
+    '<path d="M48 6 C74 6 90 26 90 50 C90 76 72 90 48 90 C24 90 6 76 6 50 C6 26 22 6 48 6Z" fill="'+body+'"/>'+
+    eye+mouth+z+'</svg>';
 }
 
 /* ============ RENDER ============ */
-const app = document.getElementById("app");
+const app=document.getElementById("app");
 
 function boardHTML(){
-  const s = sky(); const d = now();
-  const left = mins(cfg.leave) - nowMins();
-  const early = nowMins() < mins(cfg.start);
-  const until = early ? "Early. No rush yet."
-              : left>0 ? `${left} min until we leave`
-              : "We should already be gone";
-  const mood = left<=0 ? "boom" : (cfg.kids.every(allDone) ? "happy" : "calm");
-  return `<div class="board">
-    <div class="horizon">
-      <div>
-        <div class="clock">${hhmm(d)}</div>
-        <div class="until">${until}</div>
-      </div>
-      <div class="mascot-seat">
-        ${mascotSVG(mood)}
-        <div class="mascot-name">${day.mascot? day.mascot : "Not named yet"}</div>
-      </div>
-      <div class="phaseword">${s.word}</div>
-    </div>
-    <div class="lanes">${cfg.kids.map(laneHTML).join("")}</div>
-  </div>`;
+  const s=sky(), d=now(), ev=(mode()==="evening");
+  const left=mins(board().end)-nowMins();
+  const early = ev ? left>210 : left>60;
+  const until = early ? (ev?"Home. No rush yet.":"Early. No rush yet.")
+    : left>0 ? (left+" min "+(ev?"until bed":"until we leave"))
+    : (ev?"Bedtime":"We should already be gone");
+  const m = left<=0 ? (ev?"asleep":"boom") : bothDone() ? "happy" : ((ev&&left<60)?"sleepy":"calm");
+  return '<div class="board">'+
+    '<div class="horizon">'+
+      '<div><div class="clock">'+hhmm(d)+'</div><div class="until">'+until+'</div></div>'+
+      '<div class="mascot-seat">'+mascotSVG(m)+'<div class="mascot-name">'+(day.mascot||"Not named yet")+'</div></div>'+
+      '<div class="phaseword">'+s.word+'</div>'+
+    '</div>'+
+    '<div class="lanes">'+[0,1].map(laneHTML).join("")+'</div></div>';
 }
 
-function laneHTML(kid){
-  const ts = tasksFor(kid);
-  const pct = Math.round(countDone(kid)/ts.length*100);
-  const medDue = nowMins()>=450 && nowMins()<mins(cfg.leave);
-  return `<div class="lane" style="--kid:${kid.colour}">
-    <div class="fill" style="height:${pct}%"></div>
-    <div class="lane-head">
-      <div class="kid-name">${kid.name}</div>
-      <div class="tally">${countDone(kid)} of ${ts.length}</div>
-    </div>
-    <div class="tasks">
-      ${ts.map((t,i)=>`<div class="task${isDone(kid,i)?" done":""}${t.med?" med":""}${t.med&&medDue&&!isDone(kid,i)?" due":""}">
-        <div class="ico">${t.ico}</div><div class="lbl">${t.lbl}</div></div>`).join("")}
-    </div>
-  </div>`;
+function laneHTML(k){
+  const ts=tasksFor(k), total=ts.length, done=countDone(k), left=total-done;
+  const medDue = nowMins()>=450 && nowMins()<mins(board().end);
+  return '<div class="lane" style="--kid:'+cfg.colours[k]+'">'+
+    '<div class="lane-head"><div>'+
+      '<div class="kid-name">'+cfg.names[k]+'</div>'+
+      '<div class="tally">'+done+' done</div>'+
+      '<div class="togo">'+(left===0?"all finished":left+" to go")+'</div>'+
+    '</div>'+pizza(k)+'</div>'+
+    '<div class="tasks">'+ts.map(function(t,i){
+      return '<div class="task'+(isDone(k,i)?" done":"")+(t.med?" med":"")+
+        ((t.med&&medDue&&!isDone(k,i))?" due":"")+'">'+
+        '<div class="ico">'+t.ico+'</div><div class="lbl">'+t.lbl+'</div></div>';
+    }).join("")+'</div></div>';
 }
 
 function controlHTML(){
-  const left = mins(cfg.leave) - nowMins();
-  return `<div class="control">
-    <div class="ctl-bar">
-      <div class="ctl-clock">${hhmm(now())}</div>
-      <div class="ctl-note">${left>0? left+" min left":"Time's up"}</div>
-    </div>
-    <div class="zones">
-      ${cfg.kids.map(kid=>{
-        const ts=tasksFor(kid);
-        return `<div class="zone" style="--kid:${kid.colour}">
-          <div class="zone-head">${kid.name}<span>${countDone(kid)}/${ts.length}</span></div>
-          <div class="btns">
-            ${ts.map((t,i)=>`<button class="btn${isDone(kid,i)?" done":""}" data-kid="${kid.id}" data-i="${i}">
-              <span class="ico">${t.ico}</span><span class="lbl">${t.lbl}</span></button>`).join("")}
-          </div>
-        </div>`;
-      }).join("")}
-    </div>
-  </div>`;
+  const ev=(mode()==="evening"), left=mins(board().end)-nowMins();
+  return '<div class="control">'+
+    '<div class="ctl-bar"><div class="ctl-clock">'+hhmm(now())+'</div>'+
+    '<div class="ctl-note">'+(ev?"Evening":"Morning")+' \u00b7 '+(left>0?left+" min left":"Time's up")+'</div></div>'+
+    '<div class="zones">'+[0,1].map(function(k){
+      const ts=tasksFor(k);
+      return '<div class="zone" style="--kid:'+cfg.colours[k]+'">'+
+        '<div class="zone-head">'+cfg.names[k]+'<span>'+countDone(k)+'/'+ts.length+'</span></div>'+
+        '<div class="btns">'+ts.map(function(t,i){
+          return '<button class="btn'+(isDone(k,i)?" done":"")+'" data-k="'+k+'" data-i="'+i+'">'+
+            '<span class="ico">'+t.ico+'</span><span class="lbl">'+t.lbl+'</span></button>';
+        }).join("")+'</div></div>';
+    }).join("")+'</div></div>';
 }
 
 function render(){
@@ -479,145 +479,145 @@ function render(){
   document.body.style.background=s.a;
   document.documentElement.style.setProperty("--sky-a",s.a);
   document.documentElement.style.setProperty("--sky-b",s.b);
-  if(view==="board") app.innerHTML = boardHTML();
-  else if(view==="control") app.innerHTML = controlHTML();
-  else app.innerHTML = `<div style="height:62%">${boardHTML()}</div><div style="height:38%;border-top:1px solid var(--edge)">${controlHTML()}</div>`;
-  app.querySelectorAll(".btn").forEach(b=>{
-    b.addEventListener("click",()=>{
-      const kid = cfg.kids.find(k=>k.id===b.dataset.kid);
-      toggle(kid, Number(b.dataset.i));
-    });
+  if(view==="board") app.innerHTML=boardHTML();
+  else if(view==="control") app.innerHTML=controlHTML();
+  else app.innerHTML='<div style="height:62%">'+boardHTML()+'</div>'+
+    '<div style="height:38%;border-top:1px solid var(--edge)">'+controlHTML()+'</div>';
+  Array.prototype.forEach.call(app.querySelectorAll(".btn"),function(b){
+    b.addEventListener("click",function(){ toggle(Number(b.dataset.k),Number(b.dataset.i)); });
   });
 }
 
-/* ============ MOMENTS: dance, out the door, celebration ============ */
-const veilDance=document.getElementById("dance"), veilOut=document.getElementById("out"), veilWin=document.getElementById("win");
-let danceTimer=null;
-let winDismissed=false;
+/* ============ MOMENTS ============ */
+const veilDance=document.getElementById("dance"),veilOut=document.getElementById("out"),veilWin=document.getElementById("win");
+let danceTimer=null, winDismissed=false;
 
-function runDance(kid){
-  if(view==="control") return;                 // dance shows on the TV, not the gamepad
+function runDance(k){
+  if(view==="control")return;
   const total=cfg.danceSecs;
-  document.getElementById("danceWho").textContent = kid.name+", dance";
-  veilDance.style.setProperty("--kid",kid.colour);
-  const lead=veilDance.querySelector(".lead"), num=document.getElementById("danceNum");
+  document.getElementById("danceWho").textContent=cfg.names[k]+", dance";
+  veilDance.style.setProperty("--kid",cfg.colours[k]);
+  const lead=veilDance.querySelector(".lead"),num=document.getElementById("danceNum");
   const C=2*Math.PI*52; lead.style.strokeDasharray=C;
   let n=total;
-  const tick=()=>{
-    num.textContent=n;
-    lead.style.strokeDashoffset=C*(1-n/total);
-    if(n<=0){ clearInterval(danceTimer); veilDance.classList.remove("on"); return; }
+  const tick=function(){
+    num.textContent=n; lead.style.strokeDashoffset=C*(1-n/total);
+    if(n<=0){clearInterval(danceTimer);veilDance.classList.remove("on");return;}
     n--;
   };
   veilDance.classList.add("on"); tick();
   clearInterval(danceTimer); danceTimer=setInterval(tick,1000);
-  veilDance.onclick=()=>{ clearInterval(danceTimer); veilDance.classList.remove("on"); };
+  veilDance.onclick=function(){clearInterval(danceTimer);veilDance.classList.remove("on");};
 }
 
-function checkMoments(justToggled,kid){
-  // dance break, once per task per day, only when ticking on
-  if(kid!=null && justToggled!=null && isDone(kid,justToggled)){
-    const t=tasksFor(kid)[justToggled];
-    if(t && t.dance && !day.danced[kid.id].includes(justToggled)){
-      day.danced[kid.id].push(justToggled); store.set("sm.day",day); broadcast();
-      runDance(kid);
-    }
-  }
-  const late = nowMins()>=mins(cfg.leave);
-  const everyoneReady = cfg.kids.every(allDone);
+function checkMoments(){
+  const ev=(mode()==="evening");
+  const late=nowMins()>=mins(board().end);
+  const ready=bothDone();
 
-  if(everyoneReady && !late){
-    if(!day.won){ day.won=true; store.set("sm.day",day); broadcast(); }
-    if(view!=="control" && !winDismissed){
-      document.getElementById("winLine").textContent =
-        `Ready at ${hhmm(now())}. You two did that yourselves.`;
-      document.getElementById("nameBox").style.display = day.mascot? "none":"block";
+  if(ready&&!late){
+    if(!day.won[mode()]){ day.won[mode()]=true; store.set("sm.day3",day); broadcast(); }
+    if(view!=="control"&&!winDismissed){
+      document.getElementById("winFace").textContent = ev?"\u{1F319}":"\u{1F31F}";
+      document.getElementById("winTitle").textContent = ev?"All done":"Both ready";
+      document.getElementById("winLine").textContent = ev
+        ? "Finished at "+hhmm(now())+". Nothing left to do but sleep."
+        : "Ready at "+hhmm(now())+". You two did that yourselves.";
+      document.getElementById("nameBox").style.display = day.mascot?"none":"block";
       veilWin.classList.add("on");
     }
     veilOut.classList.remove("on");
     return;
   }
-  veilWin.classList.remove("on");
-  winDismissed=false;
+  veilWin.classList.remove("on"); winDismissed=false;
 
-  if(late && !everyoneReady && view!=="control"){
+  if(late&&!ready&&view!=="control"){
     const bits=[];
-    cfg.kids.forEach(k=>undoneLabels(k).forEach(l=>{ if(!bits.includes(l)) bits.push(l); }));
-    document.getElementById("carry").innerHTML = bits.slice(0,6).map(b=>`<b>${b}</b>`).join("");
-    document.getElementById("outLine").textContent = "Bring what's left with you. Go.";
-    veilOut.classList.add("on");
+    [0,1].forEach(function(kk){ undoneLabels(kk).forEach(function(l){ if(bits.indexOf(l)<0) bits.push(l); }); });
+    document.getElementById("carry").innerHTML=bits.slice(0,6).map(function(b){return "<b>"+b+"</b>";}).join("");
+    document.getElementById("boomFace").textContent = ev?"\u{1F634}":"\u{1F4A5}";
+    document.getElementById("outTitle").textContent = ev?"Lights out":"Out the door";
+    document.getElementById("outLine").textContent = ev
+      ? "Leave the rest. It'll keep until tomorrow."
+      : "Bring what's left with you. Go.";
+    veilOut.className="veil on "+mode();
   } else {
     veilOut.classList.remove("on");
   }
 }
 
-document.getElementById("nameGo").addEventListener("click",()=>{
-  const v=document.getElementById("nameIn").value.trim();
-  if(!v) return;
-  day.mascot=v; store.set("sm.day",day); broadcast();
-  document.getElementById("nameBox").style.display="none";
-  render();
+document.getElementById("nameGo").addEventListener("click",function(){
+  const v=document.getElementById("nameIn").value.trim(); if(!v)return;
+  day.mascot=v; store.set("sm.day3",day); broadcast();
+  document.getElementById("nameBox").style.display="none"; render();
 });
-veilWin.addEventListener("click",e=>{
-  if(e.target===veilWin){ winDismissed=true; veilWin.classList.remove("on"); }
+veilWin.addEventListener("click",function(e){
+  if(e.target===veilWin){winDismissed=true;veilWin.classList.remove("on");}
 });
 
-/* ============ PARENT EDIT: long-press top-left 3s ============ */
-const corner=document.getElementById("corner"), veilEdit=document.getElementById("edit");
-let holdT=null;
-const hold=()=>{ holdT=setTimeout(openEdit,3000); };
-const drop=()=>{ clearTimeout(holdT); };
-["mousedown","touchstart"].forEach(e=>corner.addEventListener(e,hold,{passive:true}));
-["mouseup","mouseleave","touchend","touchcancel"].forEach(e=>corner.addEventListener(e,drop,{passive:true}));
+/* ============ PARENT EDIT ============ */
+const corner=document.getElementById("corner"),veilEdit=document.getElementById("edit");
+let holdT=null, editMode="morning";
+["mousedown","touchstart"].forEach(function(e){
+  corner.addEventListener(e,function(){holdT=setTimeout(openEdit,3000);},{passive:true});
+});
+["mouseup","mouseleave","touchend","touchcancel"].forEach(function(e){
+  corner.addEventListener(e,function(){clearTimeout(holdT);},{passive:true});
+});
 
-function openEdit(){
-  document.getElementById("e-leave").value=cfg.leave;
-  document.getElementById("e-start").value=cfg.start;
-  document.getElementById("e-k1").value=cfg.kids[0].name;
-  document.getElementById("e-k2").value=cfg.kids[1].name;
-  document.getElementById("e-t1").value=cfg.kids[0].tasks.join("\n");
-  document.getElementById("e-t2").value=cfg.kids[1].tasks.join("\n");
-  veilEdit.classList.add("on");
+function fillEdit(){
+  const b=cfg[editMode];
+  document.getElementById("tab-morning").className = editMode==="morning"?"sel":"";
+  document.getElementById("tab-evening").className = editMode==="evening"?"sel":"";
+  document.getElementById("e-end").value=b.end;
+  document.getElementById("e-k1").value=cfg.names[0];
+  document.getElementById("e-k2").value=cfg.names[1];
+  document.getElementById("e-t1").value=b.tasks[0].join("\n");
+  document.getElementById("e-t2").value=b.tasks[1].join("\n");
 }
-document.getElementById("e-close").onclick=()=>veilEdit.classList.remove("on");
-document.getElementById("e-save").onclick=()=>{
-  cfg.leave=document.getElementById("e-leave").value||cfg.leave;
-  cfg.start=document.getElementById("e-start").value||cfg.start;
-  cfg.kids[0].name=document.getElementById("e-k1").value.trim()||cfg.kids[0].name;
-  cfg.kids[1].name=document.getElementById("e-k2").value.trim()||cfg.kids[1].name;
-  cfg.kids[0].tasks=document.getElementById("e-t1").value.split("\n").map(s=>s.trim()).filter(Boolean);
-  cfg.kids[1].tasks=document.getElementById("e-t2").value.split("\n").map(s=>s.trim()).filter(Boolean);
-  store.set("sm.cfg",cfg);
-  cfg.kids.forEach(k=>{ day.done[k.id]=(day.done[k.id]||[]).filter(i=>i<k.tasks.length); });
-  store.set("sm.day",day); broadcast(); veilEdit.classList.remove("on"); render();
-};
-document.getElementById("e-clear").onclick=()=>{
-  cfg.kids.forEach(k=>{ day.done[k.id]=[]; day.danced[k.id]=[]; });
-  day.won=false; store.set("sm.day",day); broadcast(); render();
+function openEdit(){ editMode=mode(); fillEdit(); veilEdit.classList.add("on"); }
+document.getElementById("tab-morning").onclick=function(){saveEdit();editMode="morning";fillEdit();};
+document.getElementById("tab-evening").onclick=function(){saveEdit();editMode="evening";fillEdit();};
+
+function saveEdit(){
+  const b=cfg[editMode];
+  b.end=document.getElementById("e-end").value||b.end;
+  cfg.names[0]=document.getElementById("e-k1").value.trim()||cfg.names[0];
+  cfg.names[1]=document.getElementById("e-k2").value.trim()||cfg.names[1];
+  b.tasks[0]=document.getElementById("e-t1").value.split("\n").map(function(s){return s.trim();}).filter(Boolean);
+  b.tasks[1]=document.getElementById("e-t2").value.split("\n").map(function(s){return s.trim();}).filter(Boolean);
+  store.set("sm.cfg3",cfg);
+  ["morning","evening"].forEach(function(md){
+    [0,1].forEach(function(k){
+      day.done[md][k]=day.done[md][k].filter(function(i){return i<cfg[md].tasks[k].length;});
+    });
+  });
+  store.set("sm.day3",day); broadcast();
+}
+document.getElementById("e-save").onclick=function(){saveEdit();veilEdit.classList.remove("on");render();};
+document.getElementById("e-close").onclick=function(){veilEdit.classList.remove("on");};
+document.getElementById("e-clear").onclick=function(){
+  day.done[mode()]=[[],[]]; day.danced[mode()]=[[],[]]; day.won[mode()]=false;
+  store.set("sm.day3",day); broadcast(); render();
   veilWin.classList.remove("on"); veilOut.classList.remove("on");
 };
-document.getElementById("e-reset").onclick=()=>{
-  cfg=JSON.parse(JSON.stringify(DEFAULT)); store.set("sm.cfg",cfg);
-  cfg.kids.forEach(k=>{ day.done[k.id]=[]; day.danced[k.id]=[]; });
-  day.won=false; day.mascot=null; store.set("sm.day",day); broadcast(); openEdit(); render();
+document.getElementById("e-reset").onclick=function(){
+  cfg=JSON.parse(JSON.stringify(DEFAULT)); store.set("sm.cfg3",cfg);
+  day=blankDay(); store.set("sm.day3",day); broadcast(); fillEdit(); render();
 };
 
 /* ============ TICK ============ */
 function tick(){
-  if(day.date!==todayKey()){
-    day={date:todayKey(),done:{},mascot:null,danced:{},won:false};
-    cfg.kids.forEach(k=>{day.done[k.id]=[];day.danced[k.id]=[];});
-    store.set("sm.day",day); broadcast();
-  }
+  if(day.date!==todayKey()){ day=blankDay(); store.set("sm.day3",day); broadcast(); }
   render(); checkMoments();
 }
-if(fakeBase!==null || speed>1){
-  const d=document.getElementById("demo");
-  d.textContent = "Practice run" + (speed>1 ? " \u00b7 " + speed + "\u00d7 speed" : "");
-  d.classList.add("on");
+if(fakeBase!==null||speed>1){
+  const dd=document.getElementById("demo");
+  dd.textContent="Practice run"+(speed>1?" \u00b7 "+speed+"\u00d7 speed":"");
+  dd.classList.add("on");
 }
 render(); checkMoments();
-setInterval(tick, speed>1 ? 250 : 15000);
+setInterval(tick, speed>1?250:15000);
 </script>
 </body>
 </html>
