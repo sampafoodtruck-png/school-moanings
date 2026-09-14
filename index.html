@@ -77,6 +77,10 @@ body::before{
 .task.done{background:color-mix(in srgb,var(--kid) 20%,transparent);border-color:color-mix(in srgb,var(--kid) 45%,transparent)}
 .task.done .lbl{opacity:.5;text-decoration:line-through;text-decoration-thickness:2px}
 .task.done .ico{opacity:.55}
+.task.skip{background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.10);border-style:dashed}
+.task.skip .lbl{opacity:.32}
+.task.skip .ico{opacity:.25;filter:grayscale(1)}
+.nottoday{margin-left:auto;font-size:clamp(11px,1.5vh,17px);font-weight:600;opacity:.35;white-space:nowrap}
 .task.med{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.085)}
 .task.med.due{animation:pulse 1.6s ease-in-out infinite}
 .task.med.done{animation:none}
@@ -103,6 +107,18 @@ body::before{
 .btn.done{background:color-mix(in srgb,var(--kid) 26%,transparent);border-color:var(--kid)}
 .btn.done .lbl{opacity:.55;text-decoration:line-through}
 .btn:focus-visible{outline:3px solid var(--paper);outline-offset:2px}
+.btnrow{display:flex;gap:6px;align-items:stretch;flex:1 0 auto}
+.btnrow .btn{flex:1}
+.skipbtn{
+  flex:none;width:44px;border-radius:14px;border:1.5px solid rgba(255,255,255,.10);
+  background:transparent;color:var(--paper);opacity:.32;font:inherit;font-size:17px;
+  font-weight:600;cursor:pointer;transition:opacity .2s,background .2s;
+}
+.skipbtn:active{transform:scale(.95)}
+.btnrow.skip .btn{opacity:.35;border-style:dashed}
+.btnrow.skip .btn .lbl{text-decoration:none}
+.btnrow.skip .skipbtn{opacity:.85;background:rgba(255,255,255,.09)}
+.skipbtn:focus-visible{outline:3px solid var(--paper);outline-offset:2px}
 
 /* ---------- OVERLAYS ---------- */
 .veil{position:fixed;inset:0;z-index:50;display:none;place-items:center;text-align:center;padding:28px;background:rgba(8,11,30,.93);backdrop-filter:blur(7px)}
@@ -241,10 +257,10 @@ const DEFAULT = {
     tasks:[
       ["\u{1F392} Unpack bag","\u{1F96A} Lunchbox in kitchen","\u{1F455} Uniform in laundry","\u{1F45F} Shoes away",
        "\u{1F4D2} Homework on table","\u2709\uFE0F Notes to parents","\u{1F6C1} Bath or shower","\u{1F9F8} PJs on",
-       "\u{1F37D}\uFE0F Dinner","\u{1F9E9} Puzzle or reading","\u{1F6CF}\uFE0F Bedtime"],
+       "\u{1F37D}\uFE0F Dinner","\u{1FAA5} Brush teeth","\u{1F9E9} Puzzle or reading","\u{1F6CF}\uFE0F Bedtime"],
       ["\u{1F392} Unpack bag","\u{1F96A} Lunchbox in kitchen","\u{1F455} Uniform in laundry","\u{1F45F} Shoes away",
        "\u{1F4D2} Homework on table","\u2709\uFE0F Notes to parents","\u{1F6C1} Bath or shower","\u{1F9F8} PJs on",
-       "\u{1F37D}\uFE0F Dinner","\u{1F9E9} Puzzle or reading","\u{1F6CF}\uFE0F Bedtime"]
+       "\u{1F37D}\uFE0F Dinner","\u{1FAA5} Brush teeth","\u{1F9E9} Puzzle or reading","\u{1F6CF}\uFE0F Bedtime"]
     ]
   }
 };
@@ -281,11 +297,13 @@ function todayKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMo
 function blankDay(){
   return {date:todayKey(),
     done:{morning:[[],[]], evening:[[],[]]},
+    skipped:{morning:[[],[]], evening:[[],[]]},
     danced:{morning:[[],[]], evening:[[],[]]},
     mascot:null, won:{morning:false, evening:false}};
 }
 let day = store.get("sm.day3", null);
 if(!day || day.date!==todayKey()) { day = blankDay(); store.set("sm.day3",day); }
+if(!day.skipped) { day.skipped={morning:[[],[]], evening:[[],[]]}; store.set("sm.day3",day); }
 
 /* ============ SYNC ============ */
 let chan=null; try{chan=new BroadcastChannel("school-moanings");}catch(e){}
@@ -332,13 +350,20 @@ function parse(line){
 }
 function tasksFor(k){ return board().tasks[k].map(parse); }
 function doneList(k){ return day.done[mode()][k]; }
+function skipList(k){ return day.skipped[mode()][k]; }
 function isDone(k,i){ return doneList(k).indexOf(i)>=0; }
-function countDone(k){ return doneList(k).filter(function(i){return i<board().tasks[k].length;}).length; }
-function allDone(k){ return countDone(k)===board().tasks[k].length; }
+function isSkipped(k,i){ return skipList(k).indexOf(i)>=0; }
+function total(k){ return board().tasks[k].length; }
+function countDone(k){ return doneList(k).filter(function(i){return i<total(k);}).length; }
+function countSkipped(k){ return skipList(k).filter(function(i){return i<total(k);}).length; }
+function countLeft(k){ return total(k)-countDone(k)-countSkipped(k); }
+/* Settled means dealt with, either done or ruled out for today. A day with no
+   homework should still be able to finish honestly. */
+function allDone(k){ return countLeft(k)===0; }
 function bothDone(){ return allDone(0)&&allDone(1); }
 function undoneLabels(k){
   return tasksFor(k).map(function(t,i){return {t:t,i:i};})
-    .filter(function(o){return !isDone(k,o.i);}).map(function(o){return o.t.lbl;});
+    .filter(function(o){return !isDone(k,o.i) && !isSkipped(k,o.i);}).map(function(o){return o.t.lbl;});
 }
 
 function shouldDance(k,i){
@@ -349,6 +374,7 @@ function shouldDance(k,i){
   return true;
 }
 function toggle(k,i){
+  const sk=skipList(k), sp=sk.indexOf(i); if(sp>=0) sk.splice(sp,1);
   const a=doneList(k), p=a.indexOf(i);
   if(p>=0)a.splice(p,1); else a.push(i);
   const fire=shouldDance(k,i);
@@ -356,6 +382,13 @@ function toggle(k,i){
   broadcast(fire?k:null);
   render(); checkMoments();
   if(fire) runDance(k);
+}
+
+function toggleSkip(k,i){
+  const d=doneList(k), dp=d.indexOf(i); if(dp>=0) d.splice(dp,1);
+  const sk=skipList(k), p=sk.indexOf(i);
+  if(p>=0) sk.splice(p,1); else sk.push(i);
+  store.set("sm.day3",day); broadcast(null); render(); checkMoments();
 }
 
 /* ============ SKY ============ */
@@ -377,23 +410,25 @@ function sky(){
 /* Aggregate progress lives here and nowhere else, so a finished pizza and a
    finished list can no longer be confused with one another. */
 function pizza(k){
-  const total=board().tasks[k].length, col=cfg.colours[k];
+  const n=total(k), col=cfg.colours[k];
   const cx=50, cy=50, R=42;
   const pt=function(a,r){return [cx+r*Math.cos(a*Math.PI/180), cy+r*Math.sin(a*Math.PI/180)];};
-  let out='<svg class="pie" viewBox="0 0 100 100" role="img" aria-label="'+countDone(k)+' of '+total+' done">';
+  let out='<svg class="pie" viewBox="0 0 100 100" role="img" aria-label="'+countDone(k)+' of '+n+' done">';
   out+='<circle cx="50" cy="50" r="47" fill="var(--crust)"/>';
-  for(let i=0;i<total;i++){
-    const a0=-90+i*360/total, a1=-90+(i+1)*360/total;
+  for(let i=0;i<n;i++){
+    const a0=-90+i*360/n, a1=-90+(i+1)*360/n;
     const p0=pt(a0,R), p1=pt(a1,R);
     const big=(a1-a0)>180?1:0;
-    const topped=isDone(k,i);
+    const topped=isDone(k,i), skipped=isSkipped(k,i);
     out+='<path d="M'+cx+' '+cy+' L'+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+
          ' A'+R+' '+R+' 0 '+big+' 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+' Z" fill="'+
-         (topped?col:"var(--dough)")+'" stroke="rgba(0,0,0,.22)" stroke-width="1"/>';
+         (topped?col:skipped?"rgba(255,255,255,.10)":"var(--dough)")+
+         '" stroke="rgba(0,0,0,.22)" stroke-width="1"'+
+         (skipped?' stroke-dasharray="2 2"':'')+'/>';
     if(topped){
       const mid=(a0+a1)/2;
-      [[0.52,3.1],[0.78,2.4],[0.66,2.0]].forEach(function(spec,n){
-        const off=(n-1)*(360/total)*0.22;
+      [[0.52,3.1],[0.78,2.4],[0.66,2.0]].forEach(function(spec,j){
+        const off=(j-1)*(360/n)*0.22;
         const tp=pt(mid+off, R*spec[0]);
         out+='<circle cx="'+tp[0].toFixed(2)+'" cy="'+tp[1].toFixed(2)+'" r="'+spec[1]+'" fill="rgba(0,0,0,.34)"/>';
       });
@@ -443,18 +478,20 @@ function boardHTML(){
 }
 
 function laneHTML(k){
-  const ts=tasksFor(k), total=ts.length, done=countDone(k), left=total-done;
+  const ts=tasksFor(k), done=countDone(k), skip=countSkipped(k), left=countLeft(k);
   const medDue = nowMins()>=450 && nowMins()<mins(board().end);
   return '<div class="lane" style="--kid:'+cfg.colours[k]+'">'+
     '<div class="lane-head"><div>'+
       '<div class="kid-name">'+cfg.names[k]+'</div>'+
       '<div class="tally">'+done+' done</div>'+
-      '<div class="togo">'+(left===0?"all finished":left+" to go")+'</div>'+
+      '<div class="togo">'+(left===0?"all finished":left+" to go")+
+        (skip?' \u00b7 '+skip+' not today':'')+'</div>'+
     '</div>'+pizza(k)+'</div>'+
     '<div class="tasks">'+ts.map(function(t,i){
-      return '<div class="task'+(isDone(k,i)?" done":"")+(t.med?" med":"")+
+      return '<div class="task'+(isDone(k,i)?" done":"")+(isSkipped(k,i)?" skip":"")+(t.med?" med":"")+
         ((t.med&&medDue&&!isDone(k,i))?" due":"")+'">'+
-        '<div class="ico">'+t.ico+'</div><div class="lbl">'+t.lbl+'</div></div>';
+        '<div class="ico">'+t.ico+'</div><div class="lbl">'+t.lbl+'</div>'+
+        (isSkipped(k,i)?'<div class="nottoday">not today</div>':'')+'</div>';
     }).join("")+'</div></div>';
 }
 
@@ -468,8 +505,11 @@ function controlHTML(){
       return '<div class="zone" style="--kid:'+cfg.colours[k]+'">'+
         '<div class="zone-head">'+cfg.names[k]+'<span>'+countDone(k)+'/'+ts.length+'</span></div>'+
         '<div class="btns">'+ts.map(function(t,i){
-          return '<button class="btn'+(isDone(k,i)?" done":"")+'" data-k="'+k+'" data-i="'+i+'">'+
-            '<span class="ico">'+t.ico+'</span><span class="lbl">'+t.lbl+'</span></button>';
+          return '<div class="btnrow'+(isSkipped(k,i)?" skip":"")+'">'+
+            '<button class="btn'+(isDone(k,i)?" done":"")+'" data-k="'+k+'" data-i="'+i+'">'+
+              '<span class="ico">'+t.ico+'</span><span class="lbl">'+t.lbl+'</span></button>'+
+            '<button class="skipbtn" data-sk="'+k+'" data-i="'+i+'" title="Not today">'+
+              (isSkipped(k,i)?"\u21ba":"\u2014")+'</button></div>';
         }).join("")+'</div></div>';
     }).join("")+'</div></div>';
 }
@@ -485,6 +525,9 @@ function render(){
     '<div style="height:38%;border-top:1px solid var(--edge)">'+controlHTML()+'</div>';
   Array.prototype.forEach.call(app.querySelectorAll(".btn"),function(b){
     b.addEventListener("click",function(){ toggle(Number(b.dataset.k),Number(b.dataset.i)); });
+  });
+  Array.prototype.forEach.call(app.querySelectorAll(".skipbtn"),function(b){
+    b.addEventListener("click",function(){ toggleSkip(Number(b.dataset.sk),Number(b.dataset.i)); });
   });
 }
 
@@ -590,6 +633,7 @@ function saveEdit(){
   ["morning","evening"].forEach(function(md){
     [0,1].forEach(function(k){
       day.done[md][k]=day.done[md][k].filter(function(i){return i<cfg[md].tasks[k].length;});
+      day.skipped[md][k]=day.skipped[md][k].filter(function(i){return i<cfg[md].tasks[k].length;});
     });
   });
   store.set("sm.day3",day); broadcast();
@@ -597,7 +641,7 @@ function saveEdit(){
 document.getElementById("e-save").onclick=function(){saveEdit();veilEdit.classList.remove("on");render();};
 document.getElementById("e-close").onclick=function(){veilEdit.classList.remove("on");};
 document.getElementById("e-clear").onclick=function(){
-  day.done[mode()]=[[],[]]; day.danced[mode()]=[[],[]]; day.won[mode()]=false;
+  day.done[mode()]=[[],[]]; day.skipped[mode()]=[[],[]]; day.danced[mode()]=[[],[]]; day.won[mode()]=false;
   store.set("sm.day3",day); broadcast(); render();
   veilWin.classList.remove("on"); veilOut.classList.remove("on");
 };
