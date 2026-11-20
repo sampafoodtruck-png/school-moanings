@@ -205,7 +205,8 @@ body::before{
     <div class="boom" id="winFace">&#127775;</div>
     <h1 id="winTitle">Both ready</h1>
     <p id="winLine">You two did that yourselves.</p>
-    <div id="nameBox">
+    <p id="nameHint" style="display:none">Choose your monster’s name together on the laptop.</p>
+    <div id="nameBox" style="display:none">
       <p style="font-size:clamp(14px,2.2vh,20px);opacity:.7;margin-top:1.4em">You've unlocked naming the little guy.</p>
       <input class="name-in" id="nameIn" maxlength="18" placeholder="Name it" autocomplete="off">
       <br><button class="name-btn" id="nameGo">That's the name</button>
@@ -472,7 +473,7 @@ function boardHTML(){
   return '<div class="board">'+
     '<div class="horizon">'+
       '<div><div class="clock">'+hhmm(d)+'</div><div class="until">'+until+'</div></div>'+
-      '<div class="mascot-seat">'+mascotSVG(m)+'<div class="mascot-name">'+(day.mascot||"Not named yet")+'</div></div>'+
+      '<div class="mascot-seat">'+mascotSVG(m)+'<div class="mascot-name">'+(day.mascot?day.mascot.replace(/[&<>"\']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[ch];}):"Not named yet")+'</div></div>'+
       '<div class="phaseword">'+s.word+'</div>'+
     '</div>'+
     '<div class="lanes">'+[0,1].map(laneHTML).join("")+'</div></div>';
@@ -561,15 +562,17 @@ function checkMoments(){
 
   if(ready&&!late){
     if(!day.won[mode()]){ day.won[mode()]=true; store.set("sm.day3",day); broadcast(); }
-    if(view!=="control"&&!winDismissed){
+    if((view!=="control"&&!winDismissed)||(view==="control"&&!day.mascot)){
       document.getElementById("winFace").textContent = ev?"\u{1F319}":"\u{1F31F}";
       document.getElementById("winTitle").textContent = ev?"All done":"Both ready";
       document.getElementById("winLine").textContent = ev
         ? "Finished at "+hhmm(now())+". Nothing left to do but sleep."
         : "Ready at "+hhmm(now())+". You two did that yourselves.";
-      document.getElementById("nameBox").style.display = day.mascot?"none":"block";
+      document.getElementById("nameBox").style.display = view==="control"&&!day.mascot?"block":"none";
+      document.getElementById("nameHint").style.display = view!=="control"&&!day.mascot?"block":"none";
       veilWin.classList.add("on");
     }
+    if(view==="control"&&day.mascot) veilWin.classList.remove("on");
     veilOut.classList.remove("on");
     return;
   }
@@ -591,9 +594,13 @@ function checkMoments(){
 }
 
 document.getElementById("nameGo").addEventListener("click",function(){
-  const v=document.getElementById("nameIn").value.trim(); if(!v)return;
+  if(view!=="control"||!bothDone()||nowMins()>=mins(board().end))return;
+  const v=document.getElementById("nameIn").value.trim().slice(0,18); if(!v)return;
   day.mascot=v; store.set("sm.day3",day); broadcast();
-  document.getElementById("nameBox").style.display="none"; render();
+  document.getElementById("nameBox").style.display="none"; render(); checkMoments();
+});
+document.getElementById("nameIn").addEventListener("keydown",function(e){
+  if(e.key==="Enter"){e.preventDefault();document.getElementById("nameGo").click();}
 });
 veilWin.addEventListener("click",function(e){
   if(e.target===veilWin){winDismissed=true;veilWin.classList.remove("on");}
