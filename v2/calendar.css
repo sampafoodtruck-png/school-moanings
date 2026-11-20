@@ -1,0 +1,41 @@
+/* Keep routines familiar; calendar follows underneath on smaller screens. */
+body{overflow:auto}
+#app{height:auto;min-height:100%}
+.board{height:auto;min-height:100vh}
+.board>.lanes{flex:none;min-height:640px}
+.board .task{min-height:43px;padding-block:8px}
+#calendar-section{padding:28px 2px 8px}
+.cal-heading,.cal-nav,.cal-event-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.cal-heading h2{font-size:26px;margin-top:4px}
+.cal-heading small,.cal-status{opacity:.7;font-size:14px}
+#calendar-section button,.cal-settings button{font:inherit;font-size:14px;font-weight:600;background:rgba(255,255,255,.09);color:var(--paper);border:1px solid var(--edge);border-radius:12px;padding:10px 14px;cursor:pointer}
+#calendar-section button:focus-visible,.cal-settings button:focus-visible{outline:3px solid var(--maia);outline-offset:3px}
+.cal-status{margin:10px 0 18px;min-height:20px}
+.cal-today{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cal-today>section{background:var(--lane);border:1px solid var(--edge);border-radius:20px;padding:20px}
+#calendar-section h3{font-size:18px;margin-bottom:14px}
+#calendar-section p{font-size:14px;opacity:.7;line-height:1.5}
+.cal-event{padding:12px 0;border-top:1px solid var(--edge)}
+.cal-event-top{align-items:flex-start;font-size:16px}
+.cal-event-top span{font-size:13px;white-space:nowrap;opacity:.7}
+.cal-event small{display:block;opacity:.6;margin:6px 0 10px;font-size:12px}
+.cal-check{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:15px;line-height:1.4;cursor:pointer}
+.cal-check input{accent-color:var(--maia);width:20px;height:20px;flex:none}
+.cal-check input:checked+span{text-decoration:line-through;opacity:.5}
+.cal-nav{justify-content:flex-start;margin:24px 0 14px;flex-wrap:wrap}
+.cal-week{display:grid;grid-template-columns:repeat(7,minmax(130px,1fr));gap:8px;overflow-x:auto;padding-bottom:8px}
+.cal-day{background:var(--lane);border:1px solid var(--edge);border-radius:14px;padding:13px;min-height:180px}
+.cal-day.is-today{border-color:var(--maia)}
+.cal-day .cal-event-top{display:block;font-size:13px;line-height:1.35}
+.cal-day .cal-event-top span{display:block;margin-top:5px}
+.cal-day .cal-event{padding-block:9px}
+.cal-settings{background:#131A3A;color:var(--paper);border:1px solid var(--edge);border-radius:20px;padding:24px;width:min(620px,94vw);max-height:90vh;margin:auto;overflow-y:auto;font:inherit}
+.cal-settings::backdrop{background:rgba(0,0,0,.8)}
+.cal-settings p{font-size:14px;line-height:1.5;opacity:.75;margin:12px 0}
+.cal-settings label{display:block;font-size:14px;margin-top:18px}
+.cal-settings input,.cal-settings select,.cal-settings textarea{display:block;width:100%;font:inherit;color:var(--paper);background:#0B0F24;border:1px solid var(--edge);border-radius:9px;padding:10px;margin-top:7px}
+.cal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.cal-settings .cal-help{font-size:12px}
+@media(max-width:700px){.cal-today{grid-template-columns:1fr}.cal-heading{align-items:flex-start}.cal-heading h2{font-size:22px}.board>.lanes{min-height:620px}.task .lbl{white-space:normal;font-size:14px}.cal-event-top{flex-wrap:wrap}.cal-week{grid-template-columns:repeat(7,155px)}}
+
+.cal-control-link{display:inline-block;color:var(--paper);font-size:14px;padding:10px 12px}
