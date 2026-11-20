@@ -88,7 +88,7 @@ body::before{
 
 /* ---------- CONTROL ---------- */
 .control{height:100%;display:flex;flex-direction:column;background:#0B0F24}
-.ctl-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--edge)}
+.ctl-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--edge)}
 .ctl-clock{font-size:24px;font-weight:800;letter-spacing:-.03em}
 .ctl-note{font-size:13px;opacity:.6;font-weight:600}
 .zones{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--edge);min-height:0}
@@ -476,6 +476,7 @@ function boardHTML(){
       '<div class="mascot-seat">'+mascotSVG(m)+'<div class="mascot-name">'+(day.mascot?day.mascot.replace(/[&<>"\']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[ch];}):"Not named yet")+'</div></div>'+
       '<div class="phaseword">'+s.word+'</div>'+
     '</div>'+
+    '<div data-school-banner hidden aria-label="Today at school" style="border-left:4px solid var(--maia);padding:10px 16px;background:var(--lane);font-size:clamp(18px,2vw,30px);font-weight:650;overflow-wrap:anywhere"></div>'+
     '<div class="lanes">'+[0,1].map(laneHTML).join("")+'</div></div>';
 }
 
@@ -501,7 +502,7 @@ function controlHTML(){
   const ev=(mode()==="evening"), left=mins(board().end)-nowMins();
   return '<div class="control">'+
     '<div class="ctl-bar"><div class="ctl-clock">'+hhmm(now())+'</div><a href="?view=board" style="color:inherit">Routine board</a>'+
-    '<div class="ctl-note">'+(ev?"Evening":"Morning")+' \u00b7 '+(left>0?left+" min left":"Time's up")+'</div></div>'+
+    '<button type="button" data-parent-updates style="font:inherit;padding:8px 12px;border-radius:10px">Parent updates</button><div class="ctl-note">'+(ev?"Evening":"Morning")+' \u00b7 '+(left>0?left+" min left":"Time's up")+'</div></div>'+
     '<div class="zones">'+[0,1].map(function(k){
       const ts=tasksFor(k);
       return '<div class="zone" style="--kid:'+cfg.colours[k]+'">'+
@@ -672,6 +673,8 @@ render(); checkMoments();
 setInterval(tick, speed>1?250:15000);
 </script>
 <script src="calendar.js?v=112d5cf"></script>
+<script src="parent-updates.js"></script>
 </body>
 </html>
+
 
