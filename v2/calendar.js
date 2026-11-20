@@ -74,6 +74,50 @@
         return '<label class="cal-check"><input type="checkbox" data-cal-tick="'+escape(id)+'" '+(ticks[id]?'checked':'')+'><span>'+escape(label)+'</span></label>';
       }).join(''):'')+'</article>';
   }
+  const transportPrefix = 'sm.transport.v2.';
+  const children = () => typeof cfg === 'undefined' ? ['Maia','Thaís'] : cfg.names;
+  function tripsFor(date) {
+    const trips = [{id:'school', title:'School', legs:['Drop-off','Pick-up / after-school care']}];
+    for (const event of eventsOn(date)) {
+      trips.push({id:'event:'+event.id, title:event.subject, legs:['Taking','Collecting']});
+    }
+    return trips;
+  }
+  function tripFields(date, trip, editable) {
+    const plan = read(transportPrefix+date, {});
+    return children().map((name,child) => {
+      const fields = trip.legs.map((leg,index) => {
+        const key = JSON.stringify([trip.id,child,index]);
+        const value = plan[key] || '';
+        return editable ? '<label>'+escape(leg)+'<input data-trip="'+escape(key)+'" maxlength="80" placeholder="Needs confirming" value="'+escape(value)+'"></label>'
+          : '<div>'+escape(leg)+' · '+escape(value || 'Needs confirming')+'</div>';
+      });
+      return '<article class="cal-event"><b>'+escape(name)+'</b>'+fields.join('')+'</article>';
+    }).join('');
+  }
+  function transportPanels(date) {
+    const [school,...activities] = tripsFor(date);
+    return '<div class="cal-today"><section><h3>School drop-off &amp; pick-up</h3>'+tripFields(date,school,false)+'</section>'+
+      '<section><h3>Activity transport</h3>'+activities.map(trip=>'<h4>'+escape(trip.title)+'</h4>'+tripFields(date,trip,false)).join('')+
+      (activities.length?'':'<p>'+(cache.syncedAt && date>=cache.from && date<cache.to?'No matching activities for today.':'Load Outlook to see today’s activities.')+'</p>')+'</section></div>';
+  }
+  const tripDialog = document.createElement('dialog');
+  tripDialog.className = 'cal-settings';
+  document.body.append(tripDialog);
+  function editTrips(date) {
+    tripDialog.innerHTML = '<form method="dialog"><h2>Family transport</h2><label>Plan for<input type="date" value="'+escape(date)+'"></label>'+
+      tripsFor(date).map(trip=>'<h3>'+escape(trip.title)+'</h3>'+tripFields(date,trip,true)).join('')+
+      '<p>Enter a parent, carer, care arrangement or “Not attending”. Changes save as you type.</p><button>Done</button></form>';
+    tripDialog.querySelector('[type=date]').onchange = event => {if(event.target.value) editTrips(event.target.value);};
+    tripDialog.querySelectorAll('[data-trip]').forEach(input => input.oninput = () => {
+      const key = transportPrefix+date;
+      const plan = read(key,{});
+      plan[input.dataset.trip] = input.value.trim();
+      save(key,plan);
+      draw();
+    });
+    if (!tripDialog.open) tripDialog.showModal();
+  }
   function draw() {
     let host = document.getElementById('calendar-section');
     if (!host) return;
@@ -84,7 +128,8 @@
     const stale = cache.syncedAt && Date.now()-Date.parse(cache.syncedAt)>3600000;
     host.innerHTML = '<div class="cal-heading"><div><small>'+escape(formatDate(date+'T12:00:00+10:00',{weekday:'long',day:'numeric',month:'long'}))+'</small><h2>Today & this week</h2></div><div><a class="cal-control-link" href="?view=control">Tick routine tasks</a> <button type="button" data-cal-open>Calendar settings</button></div></div>'+
       '<p class="cal-status" role="status">'+escape(status || (!cache.syncedAt ? 'Connect Outlook to see school activities here.' : !covered ? 'Calendar needs refreshing for today.' : 'Updated '+formatDate(cache.syncedAt,{weekday:'short',hour:'numeric',minute:'2-digit'})+(stale?' · Saved copy — refresh before relying on it.':'')))+'</p>'+
-      '<div class="cal-today"><section><h3>Today · remember these</h3>'+(current.length?current.map(e=>eventCard(e,date,true)).join(''):'<p>'+(covered?'No matching school activities in the saved calendar.':'Calendar not loaded for today.')+'</p>')+'</section><section><h3>Prepare for tomorrow</h3>'+(next.length?next.map(e=>eventCard(e,tomorrow,true)).join(''):'<p>'+(cache.syncedAt && tomorrow<cache.to?'No matching activities in the saved calendar.':'Refresh to check tomorrow.')+'</p>')+'</section></div>'+
+      transportPanels(date)+
+      '<div class="cal-today" style="margin-top:18px"><section><h3>Today · remember these</h3>'+(current.length?current.map(e=>eventCard(e,date,true)).join(''):'<p>'+(covered?'No matching school activities in the saved calendar.':'Calendar not loaded for today.')+'</p>')+'</section><section><h3>Prepare for tomorrow</h3>'+(next.length?next.map(e=>eventCard(e,tomorrow,true)).join(''):'<p>'+(cache.syncedAt && tomorrow<cache.to?'No matching activities in the saved calendar.':'Refresh to check tomorrow.')+'</p>')+'</section></div>'+
       '<div class="cal-nav"><button data-cal-week="-1" aria-label="Previous week">←</button><b>Week of '+escape(formatDate(monday+'T12:00:00+10:00',{day:'numeric',month:'short'}))+'</b><button data-cal-week="0">This week</button><button data-cal-week="1" aria-label="Next week">→</button></div>'+
       '<div class="cal-week">'+Array.from({length:7},(_,i)=>{const d=dateShift(monday,i);return '<section class="cal-day '+(d===date?'is-today':'')+'"><h3>'+escape(formatDate(d+'T12:00:00+10:00',{weekday:'short',day:'numeric'}))+'</h3>'+(eventsOn(d).map(e=>eventCard(e,d,false)).join('') || '<p>'+(cache.syncedAt&&d>=cache.from&&d<cache.to?'No matching activities':'Not loaded')+'</p>')+'</section>';}).join('')+'</div>';
     host.querySelector('[data-cal-open]').onclick = openSettings;
@@ -92,6 +137,16 @@
     host.querySelectorAll('[data-cal-tick]').forEach(input=>input.onchange=()=>{ticks[input.dataset.calTick]=input.checked;save(TICKS,ticks);});
   }
   function mount() {
+    const bar = document.querySelector('.control .ctl-bar');
+    if (bar && !document.getElementById('edit-transport')) {
+      const button = document.createElement('button');
+      button.id = 'edit-transport';
+      button.textContent = 'Family transport';
+      button.className = 'skipbtn';
+      button.style = 'width:auto;padding:8px 12px';
+      button.onclick = () => editTrips(today());
+      bar.append(button);
+    }
     if(document.getElementById('calendar-section')) return;
     const board = document.querySelector('.board');
     if(!board) return;
@@ -171,9 +226,10 @@
     cache={events:[],syncedAt:null,from:'',to:''};ticks={};localStorage.removeItem(KEY);localStorage.removeItem(TICKS);say('Calendar disconnected and saved events cleared from this device.');
   });
   new MutationObserver(mount).observe(document.getElementById('app'),{childList:true,subtree:true});mount();
-  window.addEventListener('storage',event=>{if(event.key===KEY){cache=read(KEY,{events:[],syncedAt:null,from:'',to:''});draw();}});
+  window.addEventListener('storage',event=>{if(event.key && event.key.startsWith(transportPrefix)) draw();if(event.key===KEY){cache=read(KEY,{events:[],syncedAt:null,from:'',to:''});draw();}});
   setInterval(()=>{if(settings.clientId)sync(false);},15*60*1000);
   if(settings.clientId)sync(false);
   // Pure helpers are exposed for deterministic timezone and rule tests.
   window.schoolCalendar={dateKey,dateShift,normalise,packing,childFor,eventsOn};
 })();
+
