@@ -11,6 +11,7 @@
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
   const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
   let settings = read(SETTINGS, {clientId:'', calendarId:'', keywords:'swim, surf, gymnastics, year 6, experience day, school, excursion'});
+  if (!settings.clientId) settings.clientId = 'a3115d87-966f-40f2-89a3-751905e09378';
   let cache = read(KEY, {events:[], syncedAt:null, from:'', to:''});
   let ticks = read(TICKS, {});
   let weekOffset = 0, auth = null, busy = false, status = '', calendars = [];
